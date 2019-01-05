@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import {Editor, EditorState, RichUtils} from 'draft-js'
-import { Grid, IconButton, Paper } from '@material-ui/core'
+import { IconButton, Paper } from '@material-ui/core'
 import FormatBoldIcon from '@material-ui/icons/FormatBold'
 import FormatItalicIcon from '@material-ui/icons/FormatItalic'
 import FormatUnderlinedIcon from '@material-ui/icons/FormatUnderlined'
@@ -42,7 +42,7 @@ class RichTextEditor extends Component {
       value={type.key}
       onMouseDown={(e) => this.toggleInlineStyle(e, type.key)}
       style={{
-        background: currentStyle.has(type.key) && '#cbcbcb',
+        background: currentStyle.has(type.key) && '#e9e9e9',
         borderRadius: 0,
         height: '35px'
       }}
@@ -55,11 +55,9 @@ class RichTextEditor extends Component {
   render() {
     return (
       <div>
-        <Grid item xs={12}>
-          <Paper style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center'}}>
+        <Paper style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           {this.InlineStyleControls()}
-          </Paper>
-        </Grid>
+        </Paper>
 
         <Paper onClick={this.focus} style={{padding: '15px', marginTop: '10px', height: '90px', overflow: 'auto'}}>
           <Editor
