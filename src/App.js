@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import RichTextEditor from './RichTextEditor'
+// import RichTextEditor from './color'
 
 
 class App extends Component {
