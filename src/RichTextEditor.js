@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { Editor, EditorState, RichUtils, Modifier } from 'draft-js'
 import { IconButton, Paper } from '@material-ui/core'
 import FormatBoldIcon from '@material-ui/icons/FormatBold'
@@ -72,22 +72,7 @@ class RichTextEditor extends Component {
     this.onChange(nextEditorState);
   }
 
-  ColorControls = () => {
-    let currentStyle = this.state.editorState.getCurrentInlineStyle();
-    return COLORS.map(type =>
-        <div
-        key={type.key}
-        onMouseDown={(e) => this.toggleColor(e, type.key)}
-        style={{
-          background: currentStyle.has(type.key) && '#e9e9e9',
-          borderRadius: 0,
-          height: '35px'
-        }}
-        >
-        {type.label}
-        </div>
-        )
-  };
+
 
   InlineStyleControls = () => {
     let currentStyle = this.state.editorState.getCurrentInlineStyle();
@@ -111,7 +96,7 @@ class RichTextEditor extends Component {
       <div>
         <Paper style={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
           {this.InlineStyleControls()}
-          {this.ColorControls()}
+          <ColorControls editorState={this.state.editorState} toggleColor={this.toggleColor} />
         </Paper>
 
         <Paper onClick={this.focus} style={{padding: '15px', marginTop: '10px', height: '90px', overflow: 'auto'}}>
@@ -131,12 +116,88 @@ class RichTextEditor extends Component {
 export default RichTextEditor
 
 
+class ColorControls extends Component {
+  state = {
+    open: false,
+  };
+
+  handleToggle = () => {
+    this.setState(state => ({ open: !state.open }));
+  };
+
+  handleClose = event => {
+    if (this.anchorEl.contains(event.target)) {
+      return;
+    }
+
+    this.setState({ open: false });
+  };
+  render() {
+    let currentStyle = this.props.editorState.getCurrentInlineStyle();
+    const { open } = this.state;
+    return (
+      <Fragment>
+            <IconButton
+            buttonRef={node => {
+              this.anchorEl = node;
+            }}
+            aria-owns={open ? 'menu-list-grow' : null}
+            aria-haspopup="true"
+            onClick={this.handleToggle}
+          >
+            Toggle Menu Grow
+          </IconButton>
+          <Popper open={open} anchorEl={this.anchorEl} transition disablePortal>
+            {({ TransitionProps, placement }) => (
+              <Grow
+                {...TransitionProps}
+                id="menu-list-grow"
+                style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+              >
+                <Paper>
+                  <ClickAwayListener onClickAway={this.handleClose}>
+                    <MenuList>
+                      <MenuItem onClick={this.handleClose}>Profile</MenuItem>
+                      <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                      <MenuItem onClick={this.handleClose}>Logout</MenuItem>
+                    </MenuList>
+                  </ClickAwayListener>
+                </Paper>
+              </Grow>
+            )}
+          </Popper>
+      </Fragment>
+    )
+  }
+}
+class ColorControls extends Component {
+  state = {
+    open: false,
+  };
+  render() {
+    let currentStyle = this.props.editorState.getCurrentInlineStyle();
+    return COLORS.map(type =>
+      <div
+      key={type.key}
+      onMouseDown={(e) => this.props.toggleColor(e, type.key)}
+      style={{
+        background: currentStyle.has(type.key) && '#e9e9e9',
+        borderRadius: 0,
+        height: '35px'
+      }}
+      >
+      {type.label}
+      </div>
+    )
+  }
+}
 
 const INLINE_STYLES = [
   {label: <FormatBoldIcon />, key: 'BOLD'},
   {label: <FormatItalicIcon />, key: 'ITALIC'},
   {label: <FormatUnderlinedIcon />, key: 'UNDERLINE'}
 ];
+
 
 var COLORS = [
   {label: 'Red', key: 'red'},
