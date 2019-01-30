@@ -67,7 +67,14 @@ class RichTextEditor extends Component {
     convertToHTML({
       entityToHTML: (entity) => {
         if (entity.type === 'IMAGE') {
-          return <img style={{ width: entity.data.width }} src={entity.data.src}/>;
+          //compress
+          //set alignment
+          return <img 
+          style={{ 
+            width: entity.data.width + '%' 
+          }}
+          src={entity.data.src}
+          />
         }
       }
     })
